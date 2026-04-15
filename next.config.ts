@@ -1,8 +1,8 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['puppeteer-core', '@sparticuz/chromium'],
-  },
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  // experimental শব্দটা বাদ দিয়ে সরাসরি serverExternalPackages লিখতে হবে
+  serverExternalPackages: ["puppeteer-core", "@sparticuz/chromium"],
 };
 
-export default nextConfig; // jodi .js file hoy tahole module.exports = nextConfig; hobe
+export default nextConfig;

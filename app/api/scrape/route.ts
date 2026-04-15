@@ -27,9 +27,8 @@ export async function POST(req: Request) {
     } else {
       browser = await puppeteer.launch({
         args: chromium.args,
-        defaultViewport: chromium.defaultViewport,
         executablePath: await chromium.executablePath(),
-        headless: chromium.headless === true ? true : 'new',
+        headless: true, // <-- ঠিক এই জায়গাটিতে আপডেট করা হয়েছে
       });
     }
     
@@ -70,7 +69,7 @@ export async function POST(req: Request) {
           Handle: title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
           Title: title,
           'Body (HTML)': `<p>${title}</p>`,
-          Vendor: baseUrl.replace(/^https?:\/\/(www\.)?/, ''), // ভেন্ডরের নামও ডায়নামিক করে দিলাম ডোমেইন থেকে
+          Vendor: baseUrl.replace(/^https?:\/\/(www\.)?/, ''), 
           Type: category,
           Tags: tags,
           'Variant Price': price,
