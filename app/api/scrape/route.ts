@@ -44,7 +44,26 @@ export async function POST(req: Request) {
     productSelector.each((i, el) => {
       const title = $(el).find('h2, h3, .product-title, .title').text().trim();
       const price = $(el).find('.price, .amount, .product-price').text().trim();
-      const imageSrc = $(el).find('img').attr('src') || '';
+      
+      // Image URL fix (Shopify needs absolute URLs with https)
+      let imageSrc = $(el).find('img').attr('src') || '';
+      if (imageSrc.startsWith('//')) {
+        imageSrc = 'https:' + imageSrc;
+      } else if (imageSrc.startsWith('/')) {
+        imageSrc = 'https://www.natuliquecalifornia.com' + imageSrc;
+      }
+
+      // Category and Tags scrape korar logic
+      let category = $(el).find('.category, .product-category, .posted_in').text().trim();
+      let tags = $(el).find('.tag, .product-tags, .tagged_as').text().trim();
+
+      // Jodi shop page e category/tags na thake, tahole default value set kora
+      if (!category) {
+        category = 'Hair Care'; // eita apnar dorkar moto change kore niben
+      }
+      if (!tags) {
+        tags = 'Natulique, Organic'; // eita apnar dorkar moto change kore niben
+      }
 
       if (title) {
         products.push({
@@ -52,6 +71,8 @@ export async function POST(req: Request) {
           Title: title,
           'Body (HTML)': `<p>${title}</p>`,
           Vendor: 'Natulique',
+          Type: category,     // Shopify CSV te Type = Category
+          Tags: tags,         // Shopify CSV te Tags
           'Variant Price': price,
           'Image Src': imageSrc,
         });
