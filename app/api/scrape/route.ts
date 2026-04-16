@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 import * as cheerio from 'cheerio';
-
+export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
