@@ -76,6 +76,11 @@ export async function POST(req: Request) {
           Vendor: baseUrl.replace(/^https?:\/\/(www\.)?/, ''), 
           Type: category,
           Tags: tags,
+          
+          // এই নতুন দুটি লাইন যোগ করুন
+          'Option1 Name': 'Title',
+          'Option1 Value': 'Default Title',
+          
           'Variant Price': price,
           'Image Src': imageSrc,
         });
