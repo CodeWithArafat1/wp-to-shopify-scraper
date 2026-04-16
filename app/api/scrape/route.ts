@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import puppeteer from 'puppeteer-core';
-import chromium from '@sparticuz/chromium';
+// নতুন 패কেজ ইমপোর্ট করা হলো
+import chromium from '@sparticuz/chromium-min'; 
 import * as cheerio from 'cheerio';
-export const maxDuration = 60;
+
+export const maxDuration = 60; // Vercel কে 60 সেকেন্ড সময় দেওয়া হলো
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
@@ -13,10 +15,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'URL is required' }, { status: 400 });
     }
 
-    // ডায়নামিক Base URL বের করা
     const baseUrl = new URL(targetUrl).origin; 
-
     let browser;
+
     if (process.env.NODE_ENV === 'development') {
       const localExecutablePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
       browser = await puppeteer.launch({
@@ -25,10 +26,14 @@ export async function POST(req: Request) {
         headless: true,
       });
     } else {
+      // Vercel-এর জন্য স্পেশাল লজিক (ইন্টারনেট থেকে ব্রাউজার নিবে)
       browser = await puppeteer.launch({
         args: chromium.args,
-        executablePath: await chromium.executablePath(),
-        headless: true, // <-- ঠিক এই জায়গাটিতে আপডেট করা হয়েছে
+        // ঠিক এই লাইনটিতে পরিবর্তন করা হয়েছে:
+        executablePath: await chromium.executablePath(
+          'https://github.com/Sparticuz/chromium/releases/download/v122.0.0/chromium-v122.0.0-pack.tar'
+        ),
+        headless: true,
       });
     }
     
@@ -49,7 +54,6 @@ export async function POST(req: Request) {
       const title = $(el).find('h2, h3, .product-title, .title').text().trim();
       const price = $(el).find('.price, .amount, .product-price').text().trim();
       
-      // ডায়নামিক ইমেজ সোর্স লজিক
       let imageSrc = $(el).find('img').attr('src') || '';
       if (imageSrc) {
         if (imageSrc.startsWith('//')) {
